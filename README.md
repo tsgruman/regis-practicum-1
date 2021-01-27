@@ -1,1 +1,1 @@
-# regis-practicum-1
+# Regis University Practicum Project - Denver Airbnb Data Analysis
