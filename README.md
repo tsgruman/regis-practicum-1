@@ -1,1 +1,2 @@
-# Regis University Practicum Project - Denver Airbnb Data Analysis
+# Denver Airbnb Data Analysis
+### This is a practicum project for the MSDS program at Regis University.
