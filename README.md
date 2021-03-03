@@ -328,6 +328,7 @@ for eps in [1, 3, 5, 7]:
     print("Cluster sizes: {}".format(np.bincount(labels + 1)))
 ```
 Output:
+
 ![image](https://user-images.githubusercontent.com/43609221/109866922-26b49300-7c23-11eb-8501-9104d8cc660b.png)
 
 ```ruby
@@ -341,6 +342,7 @@ for min_samples in [1, 3, 5, 7, 9]:
     print("Cluster sizes: {}".format(np.bincount(labels + 1)))
 ```
 Output:
+
 ![image](https://user-images.githubusercontent.com/43609221/109867093-5794c800-7c23-11eb-83a4-da93971b0dd6.png)
 
 I seemed to get as balanced of clusters as I will get from eps=3 and min_samples=5, so I used these values for the final DBSCAN model.
@@ -385,6 +387,7 @@ print('DBSCAN: {}'.format(silhouette_score(standard_cluster, dbscan_cluster.labe
 print('Agglomerative: {}'.format(silhouette_score(standard_cluster, agg.labels_)))
 ```
 Output:
+
 ![image](https://user-images.githubusercontent.com/43609221/109870530-72693b80-7c27-11eb-87db-6466321587de.png)
 
 Of the 5 models I created, the normalized k-means model performed the best. The k-means model on the original dataset (not standardized or normalized) came in at a close second, while DBSCAN was the third best performing model, but with a low score.
@@ -395,4 +398,9 @@ A public review system is incredibly important for rental services, especially w
 Each clustering method varied in performance with none of the models achieving a score over 0.67. However, in looking at the strip plots from the normalized k-means cluster model, I can see some patterns in clusters emerge. For example, the cluster with the highest prices also contained the most bedrooms, bathrooms, widest range of maximum nights' stay, the highest minimum nights threshold, the lowest rating scores, and the widest range of polarity and subjectivity scores. This makes sense if these higher priced listings are large homes intended for long-term rentals. As guests stay in a home longer and pay higher prices, they may expect higher quality services from a listing. Failure to meet those higher expectations could lead to the lower ratings and polarity in reviews.
 
 # Further Research
-There are many opportunities for further research into this topic. Every city has its "good" parts of town and the "bad" ones, I would be interested in applying clustering to GIS with this data to see how latitude and longitude affect the clusters or sentiments towards listings. 
+There are many opportunities for further research into this topic. Every city has its "good" parts of town and the "bad" ones, I would be interested in mapping this data onto the city of Denver to see how latitude and longitude affect the clusters or sentiments towards listings. 
+
+# References
+Airbnb. (2021). About Us. Retrieved from https://news.airbnb.com/about-us/
+Cox, M. (2021). InsideAirbnb. Retrieved from http://insideairbnb.com/index.html
+Else-If. (2019). Visualizing multidimensional clusters. *Kaggle.* Retrieved from https://www.kaggle.com/ellecf/visualizing-multidimensional-clusters
