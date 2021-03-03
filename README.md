@@ -163,6 +163,12 @@ Additionally, plotting polarity against a couple features reveals a positive cor
 ![image](https://user-images.githubusercontent.com/43609221/109823962-a1ff5000-7bf5-11eb-9c65-d0d41ad18af3.png) | ![image](https://user-images.githubusercontent.com/43609221/109824116-c0fde200-7bf5-11eb-9ea7-0fcb65131a3b.png)
 ----|----
 
+Taking a look at the new dataset's correlation matrix, I can get a general sense of how polarity and subjectivity are correlated with every other feature.
+
+![image](https://user-images.githubusercontent.com/43609221/109875322-8f087200-7c2d-11eb-8b52-e7d064121732.png)
+
+In line with the previously plotted graphs, polarity has a slightly positive correlation with accommodates, bathrooms, bedrooms, bed, and price and a strong positive correlation with overall ratings. There is a slight negative correlation with hosting listings count (the number of listings a host has), latitude, and longitude.
+
 # Cluster Analysis
 ## Data
 The second part of the project began with loading the final listings dataset with sentiment values and removing any non-numerical values. After subsetting only numerical columns, I was left with 2077 rows and 17 columns. I standardized and normalized the data with the intent of applying clustering to the original dataset, standardized data, and normalized data and comparing the results.
@@ -173,6 +179,8 @@ The second part of the project began with loading the final listings dataset wit
 * cluster_sub = subset data based on feature selection; contains minimum average nights, number of reviews, review scores rating, reviews per month, and polarity
 
 I also performed feature selection using ExtraTreesClassifier and SelectKBest to subset additional data. Again, I compare the models for the full dataset and selected features to compare performance.
+
+There are many clustering techniques available depending on the dataset and goals of clustering. I decided to employ three clustering methods and compare the results: K-means, DBSCAN, and agglomerative.
 
 ## K-means Clustering
 First, I needed to find the optimal value for k clusters. I employed the Elbow method using the KMeans from the sklearn library to plot for k.
@@ -276,4 +284,105 @@ Original | ![image](https://user-images.githubusercontent.com/43609221/109861445
 Standardized | ![image](https://user-images.githubusercontent.com/43609221/109861498-96734f80-7c1c-11eb-92aa-c38181e930b8.png) | ![image](https://user-images.githubusercontent.com/43609221/109861510-9bd09a00-7c1c-11eb-957f-ba2c9b480415.png)
 Normalized | ![image](https://user-images.githubusercontent.com/43609221/109861564-ab4fe300-7c1c-11eb-91a2-662e03e48747.png) | ![image](https://user-images.githubusercontent.com/43609221/109861585-b145c400-7c1c-11eb-81ca-ca193fea71bd.png)
 
+## DBSCAN
+The second clustering technique I used was DBSCAN (Density-Based Spatial Clustering of Applications with Noise), which is a well-known unsupervised learning method. As its name suggests, it works well for high density data. I used the standardized data for DBSCAN.
 
+The first step was to identify optimal epsilon and minimum samples values for the model. These values are defined by [Maklin (2019)](https://towardsdatascience.com/machine-learning-clustering-dbscan-determine-the-optimal-value-for-epsilon-eps-python-example-3100091cfbc) as:
+* epsilon: "Two points are considered neighbors if the distance between the two points is below the threshold epsilon." This is notated as eps in sklearn library.
+* minimum samples: "The minimum number of neighbors a given point should have in order to be classified as a core point. It’s important to note that the point itself is included in the minimum number of samples." This is notated as min_samples in sklearn library.
+
+To find optimal values for eps and min_samples, I used the NearestNeighbors function from the sklearn library to calculate the distance between neighbors and plot the results. Similar to the Elbow method, I'm looking to identity the maximum curvature in the plot as my epsilon value.
+
+```ruby
+neighbors = NearestNeighbors(n_neighbors=30)
+neighbors_fit = neighbors.fit(standard_cluster)
+distances, indices = neighbors_fit.kneighbors(standard_cluster)
+
+distances = np.sort(distances, axis=0)
+distances = distances[:,1]
+plt.plot(distances)
+plt.title("Point Distances")
+```
+![image](https://user-images.githubusercontent.com/43609221/109866741-e48b5180-7c22-11eb-88fa-7f3e44880797.png)
+*The max curve seems to be between 2 and 4.* 
+
+With a range of optimal eps values, I iterated dbscan with values between 1 and 7 to see how many clusters each would give me. I then iterated various values for min_samples in case the default value of 5 could be improved.
+
+```ruby
+for eps in [1, 3, 5, 7]:
+    print("\neps={}".format(eps))
+    min_samples=5
+    dbscan = DBSCAN(eps=eps, min_samples=min_samples)
+    labels=dbscan.fit_predict(standard_cluster)
+    print("min_samples= {}".format(min_samples))
+    print("Number of clusters: {}".format(len(np.unique(labels))))
+    print("Cluster sizes: {}".format(np.bincount(labels + 1)))
+```
+Output:
+![image](https://user-images.githubusercontent.com/43609221/109866922-26b49300-7c23-11eb-8501-9104d8cc660b.png)
+
+```ruby
+for min_samples in [1, 3, 5, 7, 9]:
+    print("\nmin_samples={}".format(min_samples))
+    eps=3
+    dbscan2 = DBSCAN(min_samples=min_samples, eps=eps)
+    labels=dbscan2.fit_predict(standard_cluster)
+    print("eps: {}".format(eps))
+    print("Number of clusters: {}".format(len(np.unique(labels))))
+    print("Cluster sizes: {}".format(np.bincount(labels + 1)))
+```
+Output:
+![image](https://user-images.githubusercontent.com/43609221/109867093-5794c800-7c23-11eb-83a4-da93971b0dd6.png)
+
+I seemed to get as balanced of clusters as I will get from eps=3 and min_samples=5, so I used these values for the final DBSCAN model.
+
+```ruby
+dbscan_cluster = DBSCAN(eps=3, min_samples=5).fit(standard_cluster)
+```
+Then I concatenated the resulting cluster labels back to the original dataset and the subset to create strip plots.
+
+Full Strip Plot | Subset Strip Plot
+--- | ---
+![image](https://user-images.githubusercontent.com/43609221/109867579-e570b300-7c23-11eb-882b-9941f4ec8fb4.png) | ![image](https://user-images.githubusercontent.com/43609221/109867613-ef92b180-7c23-11eb-919d-948f9c24b6c1.png)
+
+## Agglomerative Clustering
+The final clustering method I used is agglomerative with the standardized dataset. I begin by plotting a dendrogram to see how many clusters I should expect.
+
+```ruby
+plt.figure(figsize=(20, 8))
+plt.title('Hierarchy Dendrogram')
+dend = sch.dendrogram((sch.linkage(standard_cluster, method='ward')))
+```
+![image](https://user-images.githubusercontent.com/43609221/109869170-c5da8a00-7c25-11eb-904e-93befb97f5a6.png)
+
+Though this isn't pretty, it's clear there are 2 distinct clusters so I apply k=2 to the AgglomerativeClustering function on the data and, again, concatenate that back to the original dataset. Finally, I plot the final strip plots with the agglomerative cluster labels.
+
+```ruby
+agg = AgglomerativeClustering(n_clusters=2).fit(standard_cluster)
+```
+
+Full Strip Plot | Subset Strip Plot
+--- | ---
+![image](https://user-images.githubusercontent.com/43609221/109869501-2c5fa800-7c26-11eb-98c4-f4e75dad1f7b.png) | ![image](https://user-images.githubusercontent.com/43609221/109869513-32558900-7c26-11eb-89e2-ad359da304d5.png)
+
+## Evaluate Models: Silhouette Scores
+To evaluate my models' performances, I calculate the silhouette scores with the sklearn.metrics library. 
+
+```ruby
+print('kmeans: {}'.format(silhouette_score(listings_num, kmeans.labels_)))
+print('Normalized kmeans: {}'.format(silhouette_score(normal_cluster, kmeans_normal.labels_)))
+print('Standardized kmeans: {}'.format(silhouette_score(standard_cluster, kmeans_standard.labels_)))
+print('DBSCAN: {}'.format(silhouette_score(standard_cluster, dbscan_cluster.labels_)))
+print('Agglomerative: {}'.format(silhouette_score(standard_cluster, agg.labels_)))
+```
+Output:
+![image](https://user-images.githubusercontent.com/43609221/109870530-72693b80-7c27-11eb-87db-6466321587de.png)
+
+Of the 5 models I created, the normalized k-means model performed the best. The k-means model on the original dataset (not standardized or normalized) came in at a close second, while DBSCAN was the third best performing model, but with a low score.
+
+# Discussion
+A public review system is incredibly important for rental services, especially when it comes to staying in someone else's home. The sentimnent analysis revealed that reviewers tend to be positive and subjective when leaving comments for a listing. This is in line with a histogram of ratings for the listings dataset - the majority of listings are rated very highly (75/100 and above), while just a few (less than 100) are scored below a 30/100.   
+
+
+
+Combining the sentiment values with cluster analysis, 
