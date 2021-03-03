@@ -99,3 +99,7 @@ This consisted of removing punctuation and using the nltk 'words' library to rem
 
 * Polarity = quantification of positive, neutral, or negative sentiment, range from -1 (negative) to 1 (positive)
 * Subjectivity = quantification of degree of opinion vs. objective facts, range from 0 (objective) to 1 (subjective)
+
+
+
+# Cluster Analysis
