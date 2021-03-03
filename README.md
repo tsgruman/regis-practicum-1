@@ -197,5 +197,83 @@ plt.show()
 
 Repeating this process for the standardized and normalized datasets, I get the following optimal k clusters:
 * Original data: k = 3
-* Standardized data:
-* Normalized data: 
+* Standardized data: k = 6
+* Normalized data: k = 4
+
+After finding k for each dataset, I applied kmeans to the data. I then concatenated the labels back to each dataset to plot labels against various factors.
+
+```ruby
+#apply KMeans
+kmeans = KMeans(n_clusters = 3).fit(listings_num)
+y_means = kmeans.predict(listings_num)
+
+#add labels to original data
+labels = pd.DataFrame(kmeans.labels_)
+
+labelListings = pd.concat((listings_num,labels),axis=1)
+labelListings = labelListings.rename({0:'labels'}, axis=1)
+
+#print selected columns
+labelListings[['id', 'bathrooms', 'bedrooms', 'price', 'polarity', 'labels']].head(10)
+```
+![image](https://user-images.githubusercontent.com/43609221/109859993-d5a0a100-7c1a-11eb-8207-7d022201b671.png)
+*Output of cluster labels added to dataset.*
+
+A pair plot for the entire dataset is difficult to read, so I instead plotted strip plots to compare categorical cluster labels against each column. This gives me an idea of clustering patterns. This [Kaggle project](https://www.kaggle.com/ellecf/visualizing-multidimensional-clusters) was a great resource for plotting these.
+
+```ruby
+f, axes = plt.subplots(4, 5, figsize=(20,25), sharex=False)
+f.subplots_adjust(hspace=0.2, wspace=0.7)
+
+for i in range(0,len(list(labelListings))-1):
+    col = labelListings.columns[i]
+    if i < 5:
+        ax = sns.stripplot(x=labelListings['labels'], y=labelListings[col].values, 
+        jitter=True, ax=axes[0,(i)])
+        ax.set_title(col)
+    elif i >= 5 and i < 10:
+        ax = sns.stripplot(x=labelListings['labels'],y=labelListings[col].values, 
+        jitter=True, ax=axes[1,(i-10)])
+        ax.set_title(col)
+    elif i >= 10 and i < 15:
+        ax = sns.stripplot(x=labelListings['labels'], y=labelListings[col].values, 
+        jitter=True, ax=axes[2, (i-10)])
+        ax.set_title(col)
+    elif i >= 15:
+        ax = sns.stripplot(x=labelListings['labels'], y = labelListings[col].values, 
+        jitter=True, ax=axes[3, (i-15)])
+        ax.set_title(col)
+```
+![image](https://user-images.githubusercontent.com/43609221/109860713-b3f3e980-7c1b-11eb-93a5-2e3f10c82c0d.png)
+
+The full dataset is still a lot for the eyes to read through, so I concatenated the kmeans labels to the subset data (dataset with feature-selected columns only). This resulted in a much easier-to-read output for the variables that feature selection identified as most important.
+
+```ruby
+labelListings_sub = pd.concat((cluster_sub,labels),axis=1)
+labelListings_sub = labelListings_sub.rename({0:'labels'}, axis=1)
+
+f, axes = plt.subplots(2,3, figsize=(20,20), sharex=False)
+f.subplots_adjust(hspace=0.2, wspace=0.7)
+
+for i in range(0,len(list(labelListings_sub))-1):
+    col = labelListings_sub.columns[i]
+    if i < 3:
+        ax = sns.stripplot(x=labelListings_sub['labels'], y=labelListings_sub[col].values, 
+        jitter=True, ax=axes[0,(i)])
+        ax.set_title(col)
+    elif i >= 3:
+        ax = sns.stripplot(x=labelListings_sub['labels'],y=labelListings_sub[col].values, 
+        jitter=True, ax=axes[1,(i-3)])
+        ax.set_title(col)
+```
+![image](https://user-images.githubusercontent.com/43609221/109860994-0cc38200-7c1c-11eb-885c-247111a9f350.png)
+
+I repeated this with the standardized and normalized data and received the following results:
+
+Dataset | Full Strip Plot | Subset Strip Plot
+--- | --- | ---
+Original | ![image](https://user-images.githubusercontent.com/43609221/109861445-88bdca00-7c1c-11eb-8710-8648ee65fa9e.png) | ![image](https://user-images.githubusercontent.com/43609221/109861466-8e1b1480-7c1c-11eb-83f7-be1ee5c11536.png)
+Standardized | ![image](https://user-images.githubusercontent.com/43609221/109861498-96734f80-7c1c-11eb-92aa-c38181e930b8.png) | ![image](https://user-images.githubusercontent.com/43609221/109861510-9bd09a00-7c1c-11eb-957f-ba2c9b480415.png)
+Normalized | ![image](https://user-images.githubusercontent.com/43609221/109861564-ab4fe300-7c1c-11eb-91a2-662e03e48747.png) | ![image](https://user-images.githubusercontent.com/43609221/109861585-b145c400-7c1c-11eb-81ca-ca193fea71bd.png)
+
+
