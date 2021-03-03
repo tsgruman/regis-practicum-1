@@ -402,5 +402,6 @@ There are many opportunities for further research into this topic. Every city ha
 
 # References
 Airbnb. (2021). About Us. Retrieved from https://news.airbnb.com/about-us/
-Cox, M. (2021). InsideAirbnb. Retrieved from http://insideairbnb.com/index.html
+Cox, M. (2021). *InsideAirbnb.* Retrieved from http://insideairbnb.com/index.html
 Else-If. (2019). Visualizing multidimensional clusters. *Kaggle.* Retrieved from https://www.kaggle.com/ellecf/visualizing-multidimensional-clusters
+Maklin, C. (2019, June 30). DBSCAN Python example: The optimal value for epsilon (eps). *Towards Data Science.* Retrieved from https://towardsdatascience.com/machine-learning-clustering-dbscan-determine-the-optimal-value-for-epsilon-eps-python-example-3100091cfbc
