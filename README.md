@@ -153,4 +153,46 @@ listings_sentiment[['id', 'name', 'price', 'polarity', 'subjectivity']].head(5)
 ![image](https://user-images.githubusercontent.com/43609221/109821527-4b911200-7bf3-11eb-82b4-a55bf39fe404.png)
 *Merged grouped mean sentiment values to listings table.*
 
+## Results
+Analyzing the distribution of sentiment values, it's clear to see most comments left for listings skew positivie polarity and high subjectivity.
+
+![image](https://user-images.githubusercontent.com/43609221/109823325-0d94ed80-7bf5-11eb-947f-dc28228146b3.png) | ![image](https://user-images.githubusercontent.com/43609221/109823511-3cab5f00-7bf5-11eb-8b73-2729874df4f5.png)
+---- | ----
+
+Additionally, plotting polarity against a couple features reveals a positive correlation with number of bedrooms and price.
+![image](https://user-images.githubusercontent.com/43609221/109823962-a1ff5000-7bf5-11eb-9c65-d0d41ad18af3.png) | ![image](https://user-images.githubusercontent.com/43609221/109824116-c0fde200-7bf5-11eb-9ea7-0fcb65131a3b.png)
+----|----
+
 # Cluster Analysis
+## Data
+The second part of the project began with loading the final listings dataset with sentiment values and removing any non-numerical values. After subsetting only numerical columns, I was left with 2077 rows and 17 columns. I standardized and normalized the data with the intent of applying clustering to the original dataset, standardized data, and normalized data and comparing the results.
+
+* listings_num = original dataset
+* standard_cluster = standardized dataset
+* normal_cluster = normalized dataset
+* cluster_sub = subset data based on feature selection; contains minimum average nights, number of reviews, review scores rating, reviews per month, and polarity
+
+I also performed feature selection using ExtraTreesClassifier and SelectKBest to subset additional data. Again, I compare the models for the full dataset and selected features to compare performance.
+
+## K-means Clustering
+First, I needed to find the optimal value for k clusters. I employed the Elbow method using the KMeans from the sklearn library to plot for k.
+
+```ruby
+distortions = []
+K = range(1,10)
+for k in K:
+    kmeanModel = KMeans(n_clusters=k)
+    kmeanModel.fit(listings_num)
+    distortions.append(kmeanModel.inertia_)
+    
+plt.figure(figsize=(10,5))
+plt.plot(K, distortions, 'bx-')
+plt.xlabel('k')
+plt.ylabel('Distortion')
+plt.title('Elbow Method for Optimal k')
+plt.show()
+```
+![image](https://user-images.githubusercontent.com/43609221/109827509-07a10b80-7bf9-11eb-866c-794ff04b7241.png)
+*Resulting plot for Elbow Method*
+
+The resulting plot reveals the optimal number of clusters for the 
