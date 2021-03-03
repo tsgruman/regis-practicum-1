@@ -5,7 +5,7 @@ This is a practicum project for the MSDS program at Regis University. The origin
 *Denver city skyline photo by Erick Todd from Pexels*
 
 # Introduction
-When it comes to vacationing, Airbnb has become synonymous with hotels. The company that was founded in 2007 in San Francisco by two people who opened their home to guests has grown to over 7 million listings in over 220 cities worldwide (https://news.airbnb.com/about-us/). The service offers short-term and long-term rentals, ranging from private rooms to whole homes. 
+When it comes to vacationing, Airbnb has become synonymous with hotels. The company that was founded in 2007 in San Francisco by two people who opened their home to guests has grown to over 7 million listings in over 220 cities worldwide (https://news.airbnb.com/about-us/). The service offers short-term and long-term rentals, ranging from private rooms to sprawling homes. 
 
 However, not all Airbnb listings are created equally. This project will analyze Denver Airbnb listings to determine what makes an ideal Airbnb listing for Denver visitors. This will be accomplished through sentiment analysis and cluster analysis. First, sentiment analysis using TextBlob will be applied to review comments left by visitors. Second, various clustering techniques will be conducted to cluster Denver listings. The goal is to identify clusters with high polarity values and determine which features contribute to those values.
 
@@ -195,4 +195,7 @@ plt.show()
 ![image](https://user-images.githubusercontent.com/43609221/109827509-07a10b80-7bf9-11eb-866c-794ff04b7241.png)
 *Resulting plot for Elbow Method*
 
-The resulting plot reveals the optimal number of clusters for the 
+Repeating this process for the standardized and normalized datasets, I get the following optimal k clusters:
+* Original data: k = 3
+* Standardized data:
+* Normalized data: 
