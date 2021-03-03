@@ -2,6 +2,7 @@
 This is a practicum project for the MSDS program at Regis University. The original datasets were obtained from http://insideairbnb.com/.
 
 ![Denver city skyline photo by Erick Todd from Pexels](https://github.com/tsgruman/regis-practicum-denver-airbnb/blob/assets/pexels-erick-todd-6034694.jpg)
+
 *Denver city skyline photo by Erick Todd from Pexels*
 
 # Introduction
@@ -94,6 +95,7 @@ Features consist of:
 This consisted of removing punctuation and using the nltk 'words' library to remove non-English words from the comments. Removing these features reduces the change of affecting the sentiment analysis scores.
 
 ![image](https://user-images.githubusercontent.com/43609221/109817653-6497c400-7bef-11eb-81b2-f3e7c861aa70.png)
+
 *Progression of cleaning comments and resulting comments_final column*
 
 ## TextBlob
@@ -112,6 +114,7 @@ reviews_clean['polarity'] = reviews_clean.comments_final.apply(detect_pol)
 reviews_clean[['listing_id', 'comments_final', 'polarity']].head(5)
 ```
 ![image](https://user-images.githubusercontent.com/43609221/109818782-9b220e80-7bf0-11eb-9d86-ab91f732e56b.png)
+
 *Resulting output with polarity score added.*
 
 I applied the same to subjectivity, defining the function and then adding the subjectivity value to the dataset.
@@ -124,6 +127,7 @@ reviews_clean['subjectivity'] = reviews_clean.comments_final.apply(detect_sub)
 reviews_clean[['listing_id', 'comments_final', 'polarity', 'subjectivity']].head(5)
 ```
 ![image](https://user-images.githubusercontent.com/43609221/109819685-901bae00-7bf1-11eb-9b88-ab0b1cc8d087.png)
+
 *Resulting output with subjectivity score added.*
 
 To gauge the accuracy of the scoring, I printed top comments with the highest and lowest polarity and subjectivity scores.
@@ -144,6 +148,7 @@ mean_reviews = mean_reviews.drop(['id', 'reviewer_id'], axis=1)
 mean_reviews.head(10)
 ```
 ![image](https://user-images.githubusercontent.com/43609221/109821189-f5bc6a00-7bf2-11eb-9c5e-e37f4bab7581.png)
+
 *Grouped mean for each listing sentiment values.*
 
 ```ruby
@@ -151,6 +156,7 @@ listings_sentiment = pd.merge(listings_clean, mean_reviews, left_on='id', right_
 listings_sentiment[['id', 'name', 'price', 'polarity', 'subjectivity']].head(5)
 ```
 ![image](https://user-images.githubusercontent.com/43609221/109821527-4b911200-7bf3-11eb-82b4-a55bf39fe404.png)
+
 *Merged grouped mean sentiment values to listings table.*
 
 ## Results
@@ -201,6 +207,7 @@ plt.title('Elbow Method for Optimal k')
 plt.show()
 ```
 ![image](https://user-images.githubusercontent.com/43609221/109827509-07a10b80-7bf9-11eb-866c-794ff04b7241.png)
+
 *Resulting plot for Elbow Method*
 
 Repeating this process for the standardized and normalized datasets, I get the following optimal k clusters:
@@ -225,6 +232,7 @@ labelListings = labelListings.rename({0:'labels'}, axis=1)
 labelListings[['id', 'bathrooms', 'bedrooms', 'price', 'polarity', 'labels']].head(10)
 ```
 ![image](https://user-images.githubusercontent.com/43609221/109859993-d5a0a100-7c1a-11eb-8207-7d022201b671.png)
+
 *Output of cluster labels added to dataset.*
 
 A pair plot for the entire dataset is difficult to read, so I instead plotted strip plots to compare categorical cluster labels against each column. This gives me an idea of clustering patterns. This [Kaggle project](https://www.kaggle.com/ellecf/visualizing-multidimensional-clusters) was a great resource for plotting these.
@@ -304,6 +312,7 @@ plt.plot(distances)
 plt.title("Point Distances")
 ```
 ![image](https://user-images.githubusercontent.com/43609221/109866741-e48b5180-7c22-11eb-88fa-7f3e44880797.png)
+
 *The max curve seems to be between 2 and 4.* 
 
 With a range of optimal eps values, I iterated dbscan with values between 1 and 7 to see how many clusters each would give me. I then iterated various values for min_samples in case the default value of 5 could be improved.
