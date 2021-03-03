@@ -1,6 +1,8 @@
 # Denver Airbnb Data Analysis Project
 This is a practicum project for the MSDS program at Regis University. The original datasets were obtained from http://insideairbnb.com/.
 
+![Denver city skyline photo by Erick Todd from Pexels](https://github.com/tsgruman/regis-practicum-denver-airbnb/blob/assets/pexels-erick-todd-6034694.jpg)
+
 # Introduction
 When it comes to vacationing, Airbnb has become synonymous with hotels. The company that was founded in 2007 in San Francisco by two people who opened their home to guests has grown to over 7 million listings in over 220 cities worldwide. The service offers short-term and long-term rentals, ranging from private rooms to whole homes. 
 
