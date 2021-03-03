@@ -383,6 +383,7 @@ Of the 5 models I created, the normalized k-means model performed the best. The 
 # Discussion
 A public review system is incredibly important for rental services, especially when it comes to staying in someone else's home. The sentimnent analysis revealed that reviewers tend to be positive and subjective when leaving comments for a listing. This is in line with a histogram of ratings for the listings dataset - the majority of listings are rated very highly (75/100 and above), while just a few (less than 100) are scored below a 30/100.   
 
+Each clustering method varied in performance with none of the models achieving a score over 0.67. However, in looking at the strip plots from the normalized k-means cluster model, I can see some patterns in clusters emerge. For example, the cluster with the highest prices also contained the most bedrooms, bathrooms, widest range of maximum nights' stay, the highest minimum nights threshold, the lowest rating scores, and the widest range of polarity and subjectivity scores. This makes sense if these higher priced listings are large homes intended for long-term rentals. As guests stay in a home longer and pay higher prices, they may expect higher quality services from a listing. Failure to meet those higher expectations could lead to the lower ratings and polarity in reviews.
 
-
-Combining the sentiment values with cluster analysis, 
+# Further Research
+There are many opportunities for further research into this topic. Every city has its "good" parts of town and the "bad" ones, I would be interested in applying clustering to GIS with this data to see how latitude and longitude affect the clusters or sentiments towards listings. 
